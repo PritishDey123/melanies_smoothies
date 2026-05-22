@@ -1,8 +1,3 @@
-name: snowflake-streamlit-app
-channels:
-  - snowflake
-  - conda-forge
-dependencies:
-  - python=3.10
-  - streamlit
-  - snowflake-snowpark-python
+#requirements.txt
+snowflake-snowpark-python
+streamlit
