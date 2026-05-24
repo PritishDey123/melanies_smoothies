@@ -16,7 +16,7 @@ st.write('The name on your Smoothie will be:', name_on_order)
 cnx = st.connection("snowflake")
 session = cnx.session()
 
-# Get both columns (IMPORTANT)
+# Get both columns
 my_dataframe = session.table("smoothies.public.fruit_options") \
     .select(col('FRUIT_NAME'), col('SEARCH_ON'))
 
@@ -26,7 +26,7 @@ pd_df = my_dataframe.to_pandas()
 # Multiselect
 ingredients_list = st.multiselect(
     'Choose up to 5 ingredients:',
-    pd_df['FRUIT_NAME'].tolist(),   # ✅ FIX: use list
+    pd_df['FRUIT_NAME'].tolist(),
     max_selections=5
 )
 
@@ -46,14 +46,14 @@ if ingredients_list:
 
         st.subheader(fruit_chosen + ' Nutrition Information')
 
-        # ✅ FIX: use search_on (not fruit_chosen)
+        # API call using SEARCH_ON
         smoothiefroot_response = requests.get(
             "https://my.smoothiefroot.com/api/fruit/" + search_on
         )
 
-        # ✅ FIX: avoid .json() error
+        # Convert JSON to table format
         sf_df = st.dataframe(
-            data=json.loads(smoothiefroot_response.text),
+            pd.json_normalize(json.loads(smoothiefroot_response.text)),
             use_container_width=True
         )
 
